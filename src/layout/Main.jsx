@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import List from "../components/List";
+import Preloader from '../components/Preloader';
 import Service from '../services/Service';
 
 class Main extends Component {
@@ -25,9 +26,7 @@ class Main extends Component {
                 {
                     isLoad
                         ? <List movies={movies} />
-                        : <div className="progress">
-                            <div className="indeterminate"></div>
-                        </div>
+                        : <Preloader />
                 }
             </main>
         );
