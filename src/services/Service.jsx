@@ -2,7 +2,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 class Service {
 
-    _apiBase = `http://www.omdbapi.com/?apikey=${API_KEY}`;
+    _apiBase = `https://www.omdbapi.com/?apikey=${API_KEY}`;
 
     async getMovie(movie) {
         const res = await fetch(`${this._apiBase}&s=${movie}`);
