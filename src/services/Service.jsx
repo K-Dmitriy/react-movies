@@ -1,9 +1,9 @@
 class Service {
-    async getMovie(url = 'http://www.omdbapi.com/?apikey=1aa3e346&s=matrix') {
-        const res = await fetch(url);
+    async getMovie(movie) {
+        const res = await fetch(`http://www.omdbapi.com/?apikey=1aa3e346&s=${movie}`);
 
         if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, received ${res.status}`);
+            throw new Error(`Could not fetch ${`http://www.omdbapi.com/?apikey=1aa3e346&s=${movie}`}, received ${res.status}`);
         }
 
         return await res.json();
