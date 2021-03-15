@@ -2,7 +2,7 @@ import Item from './Item';
 
 function List({movies}) {
     return (
-        <div className="row" style={{display: 'grid', flexWrap: 'wrap', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem'}}>
+        <div className="row movies">
             {
                 movies.map(item => {
                     return (
