@@ -1,72 +1,65 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import List from "../components/List";
 import Preloader from '../components/Preloader';
 import Search from '../components/Search';
 import Filter from '../components/Filter';
 import Service from '../services/Service';
 
-class Main extends Component {
-    state = {
-        movies: [],
-        requestError: '',
-        search: 'matrix',
-        isLoad: false,
-        type: 'all'
-    }
-    
-    service = new Service();
+function Main() {
+    const [movies, setMovies] = useState([]);
+    const [requestError, setRequestError] = useState('');
+    const [isLoad, setIsLoad] = useState(false);
+    const [search, setSearch] = useState('matrix');
+    const [type, setType] = useState('all');
+    const serviceRef = useRef(null);
 
-    searchMovies = () => {
-        if (this.state.type === 'all') {
-            this.service.getMovie(this.state.search)
-                .then(this.processMoviesData);
-        } else {
-            this.service.getMovieByType(this.state.search, this.state.type)
-                .then(this.processMoviesData);
-        }
-    };
-
-    processMoviesData = (data) => {
+    const processMoviesData = (data) => {
         if (data.Response !== 'False') {
-            this.setState({ movies: data.Search, isLoad: true});
+            setMovies(data.Search);
+            setIsLoad(true);
         } else {
-            this.setState({ requestError: data.Error, isLoad: true});
+            setRequestError(data.Error);
+            setIsLoad(true);
         }
     };
-
-    componentDidMount() {
-        this.searchMovies();
-    }
         
-    handleChangeSearch = (evt) => {
-        this.setState(() => {
-            return { isLoad: false, search: evt.target.value, requestError: '' };
-        }, this.searchMovies);
+    const handleChangeSearch = (evt) => {
+        setIsLoad(false);
+        setSearch(evt.target.value);
+        setRequestError('');
     };
 
-    changeFilter = evt => {
-        this.setState(() => {
-            return { type: evt.target.value };
-        }, this.searchMovies)
+    const changeFilter = evt => {
+        setType(evt.target.value);
     };
 
-    render() {
-        const { movies, requestError, isLoad, search, type } = this.state;
+    useEffect(() => {
+        serviceRef.current = new Service();
+    }, [])
 
-        return (
-            <main className="container content">
-                <Search onChange={this.handleChangeSearch} search={search}/>
-                <Filter onChange={(this.changeFilter)} type={type}/>
-                {
-                    requestError
-                        ? <h2 className="red-text text-darken-3">{requestError}</h2>
-                        : isLoad
-                            ? <List movies={movies} />
-                            : <Preloader />
-                }
-            </main>
-        );
-    }
+    useEffect(() => {
+        if (type === 'all') {
+            serviceRef.current.getMovie(search)
+                .then(processMoviesData);
+        } else {
+            serviceRef.current.getMovieByType(search, type)
+                .then(processMoviesData);
+        }
+    }, [search, type]);
+
+    return (
+        <main className="container content">
+            <Search onChange={handleChangeSearch} search={search}/>
+            <Filter onChange={changeFilter} type={type}/>
+            {
+                requestError
+                    ? <h2 className="red-text text-darken-3">{requestError}</h2>
+                    : isLoad
+                        ? <List movies={movies} />
+                        : <Preloader />
+            }
+        </main>
+    );
 }
 
 export default Main;

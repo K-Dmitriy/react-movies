@@ -14,7 +14,7 @@ function Item({ Title: title, Poster: poster, Type: type, Year: year, imdbID: id
             <i className="material-icons right">{year}</i>
           </span>
           <p>
-            <a>{type}</a>
+            <strong>{type}</strong>
           </p>
         </div>
         <div className="card-reveal">
